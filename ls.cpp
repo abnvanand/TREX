@@ -79,6 +79,7 @@ void ls(char const *dir) {
 
     sort(list.begin(), list.end(), cmp);
 
+    // TODO: play with setw to find correct with
     for (const auto &i: list) {
         // TODO: make human readable like ls -lh
         cout << setw(10) << i.statbuf.st_size << "";
@@ -90,7 +91,7 @@ void ls(char const *dir) {
         cout << setw(10);
         print_permissions(i.statbuf.st_mode);
 
-        cout << timestamp_to_localtime(i.statbuf.st_mtime) << " ";
+        cout << setw(18) << timestamp_to_localtime(i.statbuf.st_mtime) << " ";
 
         // Print name at the end bcoz it can have variable length
         cout << "\t" << i.name;
