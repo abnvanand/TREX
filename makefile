@@ -9,5 +9,6 @@ OBJ = util.o list.o main.o
 trex: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-
+clean:
+	rm -f *.o trex	
 
