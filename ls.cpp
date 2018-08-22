@@ -32,6 +32,21 @@ string timestamp_to_localtime(time_t timestamp) {
     return timbuf;
 }
 
+// TODO: Find how to handle all possible file types. read page 140 and 141
+// currently it handles only 'd' and '-' no 'l' for symlink etc..
+void print_permissions(mode_t st_mode) {
+    cout << ((S_ISDIR(st_mode)) ? "d" : "-");
+    cout << ((st_mode & S_IRUSR) ? "r" : "-");
+    cout << ((st_mode & S_IWUSR) ? "w" : "-");
+    cout << ((st_mode & S_IXUSR) ? "x" : "-");
+    cout << ((st_mode & S_IRGRP) ? "r" : "-");
+    cout << ((st_mode & S_IWGRP) ? "w" : "-");
+    cout << ((st_mode & S_IXGRP) ? "x" : "-");
+    cout << ((st_mode & S_IROTH) ? "r" : "-");
+    cout << ((st_mode & S_IWOTH) ? "w" : "-");
+    cout << ((st_mode & S_IXOTH) ? "x" : "-");
+}
+
 // FIXME: sort should imitate ls in the order of results
 int cmp(FileObj o1, FileObj o2) {
     return o1.name < o2.name;
@@ -72,8 +87,8 @@ void ls(char const *dir) {
         cout << setw(10) << getpwuid(i.statbuf.st_uid)->pw_name << " ";
         cout << setw(10) << getgrgid(i.statbuf.st_gid)->gr_name << "";
 
-        // TODO: Find how to get permission from mode read page 140 and 141
-        cout << setw(10) << i.statbuf.st_mode << " ";
+        cout << setw(10);
+        print_permissions(i.statbuf.st_mode);
 
         cout << timestamp_to_localtime(i.statbuf.st_mtime) << " ";
 
