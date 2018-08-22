@@ -3,4 +3,4 @@ project(TREX)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(TREX ls.cpp)
+add_executable(TREX main.cpp list.cpp list.h util.cpp util.h)

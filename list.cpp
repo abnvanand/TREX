@@ -1,14 +1,5 @@
-#include <unistd.h>
-#include <iostream>
-#include <iomanip>
-#include <dirent.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <pwd.h>
-#include <grp.h>
-#include <vector>
-#include <algorithm>
+#include "list.h"
+#include "util.h"
 
 using namespace std;
 
@@ -17,20 +8,12 @@ struct FileObj {
     struct stat statbuf;
 };
 
-/**
- * converts timestamp to localtime
- * @param timestamp
- * @return string representation of time
- */
-string timestamp_to_localtime(time_t timestamp) {
-    struct tm lt;
-    localtime_r(&timestamp, &lt);
-    char timbuf[80];
 
-    // source https://stackoverflow.com/a/13542409/5463404
-    strftime(timbuf, sizeof(timbuf), "%d.%m.%Y %H:%M", &lt);
-    return timbuf;
+// FIXME: sort should imitate ls in the order of results
+int cmp(FileObj o1, FileObj o2) {
+    return o1.name < o2.name;
 }
+
 
 // TODO: Find how to handle all possible file types. read page 140 and 141
 // currently it handles only 'd' and '-' no 'l' for symlink etc..
@@ -45,11 +28,6 @@ void print_permissions(mode_t st_mode) {
     cout << ((st_mode & S_IROTH) ? "r" : "-");
     cout << ((st_mode & S_IWOTH) ? "w" : "-");
     cout << ((st_mode & S_IXOTH) ? "x" : "-");
-}
-
-// FIXME: sort should imitate ls in the order of results
-int cmp(FileObj o1, FileObj o2) {
-    return o1.name < o2.name;
 }
 
 
@@ -99,11 +77,4 @@ void ls(char const *dir) {
     }
 
     closedir(dirptr);
-}
-
-int main() {
-    cout << "--------------BEGIN-----------" << endl;
-    ls(".");
-    cout << "--------------END-----------" << endl;
-    return 0;
 }
