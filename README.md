@@ -14,3 +14,9 @@ A TeRminal based file EXplorer.
  - pressing ESC key application should go back to normal mode 
  (conflicts with the handling of Arrow Keys)
   An arrow key is a combination of 'ESC','[' and 'A(for up arrow)')
+
+
+# READ
+- scrolling: http://www.termsys.demon.co.uk/vtansi.htm
+
+- highlight current cursor line http://www.termsys.demon.co.uk/vtansi.htm
