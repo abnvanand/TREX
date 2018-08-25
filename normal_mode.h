@@ -4,7 +4,9 @@
 #include <iostream>
 #include <termios.h>
 #include "cursor_control.h"
+#include "keymap.h"
+#include "app_library.h"
 
-void switch_to_normal_mode();
+int normal_mode();
 
 #endif //NORMAL_MODE_H
