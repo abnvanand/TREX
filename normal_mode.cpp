@@ -1,4 +1,6 @@
 #include "normal_mode.h"
+#include "util.h"
+#include "list.h"
 
 using namespace std;
 
@@ -10,6 +12,17 @@ using namespace std;
  * @return
  */
 int normal_mode() {
+//    clear_screen();
+
+    draw_info_line("NORMAL_MODE");
+    move_cursor_xy(1, 1);
+
+    cout << "-------------BEGIN-----------" << endl;
+    ls(".");
+    cout << "--------------END-----------" << endl;
+
+    move_cursor_xy(1, 1);
+
     struct termios initial_settings, new_settings;
     tcgetattr(fileno(stdin), &initial_settings);
     new_settings = initial_settings;
