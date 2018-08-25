@@ -5,7 +5,6 @@
 #include <termios.h>
 #include "cursor_control.h"
 #include "keymap.h"
-#include "app_library.h"
 
 int normal_mode();
 
