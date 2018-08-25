@@ -9,6 +9,10 @@
 #define COLON ':'
 #define QUIT 'q'
 
+#define ENTER 10
+#define DELETE 127
+#define BACKSPACE 8
+
 #define ESCAPE 27
 #define ETX 3
 
