@@ -14,17 +14,12 @@ int normal_mode() {
     tcgetattr(fileno(stdin), &initial_settings);
     new_settings = initial_settings;
 
-    int cause_of_return = RES_QUIT;
-
     char ch;
-
-    tcgetattr(fileno(stdin), &initial_settings);
-
-    new_settings = initial_settings;
+    int cause_of_return = RES_QUIT;
 
     new_settings.c_lflag &= ~ICANON;
     new_settings.c_lflag &= ~ECHO;         // to hide typed entry
-    new_settings.c_lflag &= ~ISIG;          // to catch ctrl^c etc signal
+    new_settings.c_lflag &= ~ISIG;         // to catch ctrl^c etc signal
 
     new_settings.c_cc[VMIN] = 1;
     new_settings.c_cc[VTIME] = 0;
@@ -38,19 +33,13 @@ int normal_mode() {
     do {
         cin >> ch;
 
-            switch (ch) {
-                case ARROW_UP:
-                    move_up(1);
-                    break;
-                case ARROW_DOWN:
-                    move_down(1);
-                    break;
-                case ARROW_RIGHT:
-                    move_right(1);
-                    break;
-                case ARROW_LEFT:
-                    move_left(1);
-                    break;
+        switch (ch) {
+            case ARROW_UP:
+            case ARROW_DOWN:
+//            case ARROW_RIGHT:
+//            case ARROW_LEFT:
+                move_cursor(ch);
+                break;
 
             case ETX:  // ETX (end of text) (Ctrl+C )
                 cout << "\nType q to quit\n";
