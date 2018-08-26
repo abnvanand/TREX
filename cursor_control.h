@@ -38,4 +38,10 @@ void print_coloured_output(std::string text);
 
 void execute_command(std::string &command);
 
+void scroll_up();
+
+void scroll_down();
+
+void scroll_screen();
+
 #endif //CURSOR_CONTROL_H

@@ -88,3 +88,14 @@ void print_coloured_output(string text) {
     move_left(size);
 }
 
+void scroll_up() {
+    cout << "\033M";
+}
+
+void scroll_down() {
+    cout << "\033D";
+}
+
+void scroll_screen() {
+    cout << "\033[r";
+}
