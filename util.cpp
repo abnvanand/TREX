@@ -14,3 +14,19 @@ std::string timestamp_to_localtime(time_t timestamp) {
     strftime(timbuf, sizeof(timbuf), "%d.%m.%Y %H:%M", &lt);
     return timbuf;
 }
+
+void join(const std::vector<std::string> &v, char c, std::string &s) {
+    s.clear();
+    for (auto p = v.begin(); p != v.end(); ++p) {
+        s += *p;
+        if (p != v.end() - 1)
+            s += c;
+    }
+}
+
+void build_home_path(const std::vector<std::string> &v, std::string &s) {
+    s.clear();
+    for (unsigned int i = 1; i < v.size(); i++) {
+        s += "../";
+    }
+}
