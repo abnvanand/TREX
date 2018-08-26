@@ -11,7 +11,8 @@
 
 #define ENTER 10
 #define DELETE 127
-#define BACKSPACE 8
+// I dno't know why but on my system backspace gives 127 not 8
+#define BACKSPACE 127
 
 #define ESCAPE 27
 #define ETX 3
