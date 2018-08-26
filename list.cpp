@@ -72,6 +72,6 @@ void print_details(string name) {
     cout << setw(18) << timestamp_to_localtime(statbuf.st_mtime);
 
     // Print name at the end bcoz it can have variable length
-    cout << "  " << name;
+    cout << "  " << name << (S_ISDIR(statbuf.st_mode) ? "/" : "");
     cout << "\n";
 }
