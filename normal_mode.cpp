@@ -21,8 +21,7 @@ int normal_mode() {
 
     new_settings.c_cc[VMIN] = 1;
     new_settings.c_cc[VTIME] = 0;
-
-
+    
     if (tcsetattr(fileno(stdin), TCSANOW, &new_settings) != 0) {
         cerr << "Could not set attributes\n";
         return RES_ERROR;
@@ -136,8 +135,25 @@ int refresh_normal_mode(string &dir_name, vector<string> &back_stack, vector<str
                 back_stack.pop_back();
 
             } else {
-                forward_stack.clear();
-                back_stack.push_back(dir_name);
+                // TODO: handle files separate from folders
+                struct stat buf;
+                lstat(dir_name.c_str(), &buf);
+                if (S_ISDIR(buf.st_mode)) {
+                    forward_stack.clear();
+                    back_stack.push_back(dir_name);
+                } else {
+                    string command = "xdg-open " + dir_name;
+                    // Need try catch to suppress GUI warnings.
+                    // FIXME : warnings still visible on some systems
+                    try {
+                        system(command.c_str());
+                        continue;
+                    }
+                    catch (int e) {
+                        // ignore
+                        continue;
+                    }
+                }
             }
             return RES_GOTO_DIR;
 
