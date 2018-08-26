@@ -36,6 +36,8 @@ void draw_info_line(std::string current_mode);
 
 void print_coloured_output(std::string text);
 
+void print_underlined_text(const std::string &text);
+
 void execute_command(std::string &command);
 
 void scroll_up();

@@ -88,6 +88,10 @@ void print_coloured_output(string text) {
     move_left(size);
 }
 
+void print_underlined_text(const string &text) {
+    cout << "\033[4m" << text << "\033[0m";
+}
+
 void scroll_up() {
     cout << "\033M";
 }
