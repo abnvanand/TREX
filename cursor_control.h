@@ -29,6 +29,7 @@ void save_cursor_pos();
 void restore_cursor_pos();
 
 void clear_row(int row_number);
+void get_window_size(unsigned int &rows, unsigned int &cols);
 
 void draw_command_line();
 
