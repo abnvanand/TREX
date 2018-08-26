@@ -79,6 +79,9 @@ void draw_info_line(string current_mode) {
     clear_row(rows - 1);
     move_cursor_xy(rows - 1, 1);
     cout << current_mode;
+    string dimension_string = to_string(rows) + "X" + to_string(cols);
+    move_cursor_xy(rows - 1, static_cast<int>(cols - dimension_string.length()));
+    cout << dimension_string;
     restore_cursor_pos();
 }
 
