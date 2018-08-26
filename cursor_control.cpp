@@ -46,14 +46,14 @@ void restore_cursor_pos() {
     cout << "\033[u";
 }
 
-void clear_row(int row_number) {
+void clear_row(unsigned int row_number) {
     save_cursor_pos();
     move_cursor_xy(row_number, 1);
     cout << "\033[K";
     restore_cursor_pos();
 }
 
-void get_window_size(int &rows, int &cols) {
+void get_window_size(unsigned int &rows, unsigned &cols) {
     struct winsize ws;
     ioctl(fileno(stdout), TIOCGWINSZ, &ws);
     cols = ws.ws_col;
@@ -63,7 +63,7 @@ void get_window_size(int &rows, int &cols) {
 
 void draw_command_line() {
     // get window size
-    int rows, cols;
+    unsigned int rows, cols;
     get_window_size(rows, cols);
 
     clear_row(rows);
@@ -74,7 +74,7 @@ void draw_command_line() {
 
 void draw_info_line(string current_mode) {
     save_cursor_pos();
-    int rows, cols;
+    unsigned int rows, cols;
     get_window_size(rows, cols);
     clear_row(rows - 1);
     move_cursor_xy(rows - 1, 1);
