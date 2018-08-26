@@ -12,9 +12,13 @@
 #include <grp.h>
 #include <vector>
 #include <algorithm>
+#include "util.h"
 
-void print_permissions(mode_t st_mode);
 
-void ls(char const *dir);
+void print_permissions(mode_t &st_mode);
+
+void print_details(std::string i);
+
+std::vector<std::string> ls(std::string dir);
 
 #endif //LIST_H
