@@ -21,7 +21,7 @@ int normal_mode() {
 
     new_settings.c_cc[VMIN] = 1;
     new_settings.c_cc[VTIME] = 0;
-    
+
     if (tcsetattr(fileno(stdin), TCSANOW, &new_settings) != 0) {
         cerr << "Could not set attributes\n";
         return RES_ERROR;
@@ -58,9 +58,25 @@ int refresh_normal_mode(string &dir_name, vector<string> &back_stack, vector<str
 
     vector<string> directory_list = ls(std::move(dir_name));
 
-    for (auto i:directory_list)
-        print_details(i);
+    /*
+     */
+    unsigned int rows, cols;
+    get_window_size(rows, cols);
+    unsigned int max_num_rows = rows - 3;   // subtract 1 for command line 1 for status line and 1 for a blank line
 
+    scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows] FIXME RCA?
+
+    unsigned int i = 0;
+    for (; i < directory_list.size() and i < max_num_rows - 1; i++) { // * Beware DONOT change i<max_num_rows FIXME RCA?
+        if (i == 0) {
+            underline_on();
+            print_details(directory_list[i]);
+            underline_off();
+        } else {
+            print_details(directory_list[i]);
+        }
+        cout << "\n";
+    }
     move_cursor_xy(1, 1);
 
     unsigned long current_index = 0;
@@ -73,13 +89,29 @@ int refresh_normal_mode(string &dir_name, vector<string> &back_stack, vector<str
 
         if (ch == ARROW_UP) {
             if (current_index > 0) {
-                scroll_up();
+                save_cursor_pos();
+                print_details(directory_list[current_index]);
+                restore_cursor_pos();
                 current_index -= 1;
+                scroll_up();
+                save_cursor_pos();
+                underline_on();
+                print_details(directory_list[current_index]);
+                underline_off();
+                restore_cursor_pos();
             }
         } else if (ch == ARROW_DOWN) {
             if (current_index < last_index) {
-                scroll_down();
+                save_cursor_pos();
+                print_details(directory_list[current_index]);
+                restore_cursor_pos();
                 current_index += 1;
+                scroll_down();
+                save_cursor_pos();
+                underline_on();
+                print_details(directory_list[current_index]);
+                underline_off();
+                restore_cursor_pos();
             }
         } else if (ch == ARROW_LEFT) {
             if (back_stack.size() == 1)
