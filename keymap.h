@@ -8,6 +8,7 @@
 
 #define COLON ':'
 #define QUIT 'q'
+#define HOME 'h'
 
 #define ENTER 10
 #define DELETE 127
