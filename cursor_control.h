@@ -48,6 +48,6 @@ void scroll_up();
 
 void scroll_down();
 
-void scroll_screen();
+void scroll_screen(unsigned int start, unsigned int end);
 
 #endif //CURSOR_CONTROL_H

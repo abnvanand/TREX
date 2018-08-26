@@ -107,6 +107,6 @@ void scroll_down() {
     cout << "\033D";
 }
 
-void scroll_screen() {
-    cout << "\033[r";
+void scroll_screen(unsigned int start, unsigned int end) {
+    cout << "\033[" + to_string(start) + ";" + to_string(end) + "r";
 }
