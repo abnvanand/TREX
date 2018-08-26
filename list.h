@@ -15,7 +15,7 @@
 #include "util.h"
 
 
-void print_permissions(mode_t &st_mode);
+std::string get_permission_string(mode_t &st_mode);
 
 void print_details(std::string i);
 

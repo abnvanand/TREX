@@ -10,17 +10,19 @@ int cmp(const string &a, const string &b) {
 
 // TODO: Find how to handle all possible file types. read page 140 and 141
 // currently it handles only 'd' and '-' no 'l' for symlink etc..
-void print_permissions(mode_t &st_mode) {
-    cout << ((S_ISDIR(st_mode)) ? "d" : "-");
-    cout << ((st_mode & S_IRUSR) ? "r" : "-");
-    cout << ((st_mode & S_IWUSR) ? "w" : "-");
-    cout << ((st_mode & S_IXUSR) ? "x" : "-");
-    cout << ((st_mode & S_IRGRP) ? "r" : "-");
-    cout << ((st_mode & S_IWGRP) ? "w" : "-");
-    cout << ((st_mode & S_IXGRP) ? "x" : "-");
-    cout << ((st_mode & S_IROTH) ? "r" : "-");
-    cout << ((st_mode & S_IWOTH) ? "w" : "-");
-    cout << ((st_mode & S_IXOTH) ? "x" : "-");
+string get_permission_string(mode_t &st_mode) {
+    string res;
+    res += ((S_ISDIR(st_mode)) ? "d" : "-");
+    res += ((st_mode & S_IRUSR) ? "r" : "-");
+    res += ((st_mode & S_IWUSR) ? "w" : "-");
+    res += ((st_mode & S_IXUSR) ? "x" : "-");
+    res += ((st_mode & S_IRGRP) ? "r" : "-");
+    res += ((st_mode & S_IWGRP) ? "w" : "-");
+    res += ((st_mode & S_IXGRP) ? "x" : "-");
+    res += ((st_mode & S_IROTH) ? "r" : "-");
+    res += ((st_mode & S_IWOTH) ? "w" : "-");
+    res += ((st_mode & S_IXOTH) ? "x" : "-");
+    return res;
 }
 
 
@@ -58,20 +60,18 @@ void print_details(string name) {
 
     lstat(name.c_str(), &statbuf);
 
-    // TODO: play with setw to find correct with
     // TODO: make human readable like ls -lh
-    cout << setw(10) << statbuf.st_size;
+    cout << setw(8) << statbuf.st_size;
 
     // TODO: test long user names
     cout << setw(10) << getpwuid(statbuf.st_uid)->pw_name;
     cout << setw(10) << getgrgid(statbuf.st_gid)->gr_name;
 
-    cout << setw(8);
-    print_permissions(statbuf.st_mode);
+    cout << setw(12) << get_permission_string(statbuf.st_mode);
 
     cout << setw(18) << timestamp_to_localtime(statbuf.st_mtime);
 
     // Print name at the end bcoz it can have variable length
-    cout << "  " << name << (S_ISDIR(statbuf.st_mode) ? "/" : "");
-    cout << "\n";
+//    cout << setw(20) << name << (S_ISDIR(statbuf.st_mode) ? "/" : "");
+    printf("    %.14s%s%s", name.c_str(), (name.length() > 14 ? "..." : ""), (S_ISDIR(statbuf.st_mode) ? "/" : ""));
 }
