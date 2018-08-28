@@ -14,6 +14,7 @@
 int normal_mode();
 
 int refresh_normal_mode(std::string &dir_name,
-                        std::vector<std::string> &back_stack, std::vector<std::string> &forward_stack);
+                        std::vector<std::string> &back_stack,
+                        std::vector<std::string> &forward_stack);
 
 #endif //NORMAL_MODE_H
