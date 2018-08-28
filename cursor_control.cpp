@@ -85,6 +85,19 @@ void draw_info_line(string current_mode) {
     restore_cursor_pos();
 }
 
+// Writes the row number the cursor is pointing to in info line
+void write_row_number(unsigned long row_num) {
+    save_cursor_pos();
+    unsigned int rows, cols;
+    get_window_size(rows, cols);
+    move_cursor_xy(rows - 2, cols - 3);
+    if (row_num < 10)
+        cout << 0 << row_num;
+    else
+        cout << row_num;
+    restore_cursor_pos();
+}
+
 void print_coloured_output(string text) {
     cout << "\033[1;31m" << text << "\033[0m";
     int size = (int) text.size() + 2;

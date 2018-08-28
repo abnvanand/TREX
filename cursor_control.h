@@ -36,6 +36,8 @@ void draw_command_line();
 
 void draw_info_line(std::string current_mode);
 
+void write_row_number(unsigned long row_num);
+
 void print_coloured_output(std::string text);
 
 void underline_on();
