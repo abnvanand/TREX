@@ -3,20 +3,16 @@
 
 using namespace std;
 
-string pwd() {
-    char *cwd = get_current_dir_name();
-    return cwd;
-}
-
 // We are in Normal mode (where you can't type anything exceptions are always there :)
 /**
  * it's the responsibility of this module to leave the terminal in the state it was
  * @param initial_settings
  * @return
  */
-const string HOME_PATH = pwd();
+string HOME_PATH;
 
 int normal_mode() {
+    HOME_PATH = pwd();
     struct termios initial_settings, new_settings;
     tcgetattr(fileno(stdin), &initial_settings);
     new_settings = initial_settings;
