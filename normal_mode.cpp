@@ -1,5 +1,6 @@
 #include "normal_mode.h"
 #include "command_mode.h"
+#include "commands.h"
 
 using namespace std;
 
@@ -207,8 +208,9 @@ int refresh_normal_mode(string &dir_name,
             print_details(directory_list[current_index]);
             restore_cursor_pos();
 
-            // GOTO command mode
-            int res = command_mode(HOME_PATH);
+            string extra_params; // To be used for goto and search
+            // switch to command mode
+            int res = command_mode(HOME_PATH, extra_params);
 
             if (res == RES_NORMAL_MODE) {
                 draw_info_line(info_line);
@@ -222,7 +224,17 @@ int refresh_normal_mode(string &dir_name,
                 underline_off();
                 restore_cursor_pos();
 
-                continue;
+                if (extra_params == DIRTY) {
+                    dir_name = pwd();
+                    return RES_ENTERED_DIR;
+                } else {
+                    continue;
+                }
+            } else if (res == RES_GOTO_COMMAND) {
+                back_stack.push_back(pwd());
+                forward_stack.clear();
+                dir_name = extra_params;
+                return RES_ENTERED_DIR;
             } else
                 return RES_QUIT;
         } else {

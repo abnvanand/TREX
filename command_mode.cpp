@@ -1,5 +1,6 @@
 #include "command_mode.h"
 #include "commands.h"
+#include "search_mode.h"
 
 using namespace std;
 
@@ -45,6 +46,14 @@ int command_mode(string HOME_PATH, string &extra_param) {
                 int res = execute_command(command, HOME_PATH, extra_param);
                 command.clear();   // reset command
                 draw_command_line();
+
+                // Return result codes for goto and search
+                if (res == RES_GOTO_COMMAND) {
+                    cout << "Moving to directory: " << extra_param << " ." << ENTER_TO_CONTINUE;
+                    getchar();
+                    return RES_GOTO_COMMAND;
+                } else if (res == RES_NORMAL_MODE)
+                    return RES_NORMAL_MODE;
             }
         } else {
             command += ch;
@@ -254,13 +263,68 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         return RES_CONTINUE;
     }
 
+    // :goto <directory_path>
+    // <directory_path> is relative to APP_ROOT
+    // If / is given as directory path then goto APP_ROOT
+    if (tokens[0] == "goto") {
+        if (tokens.size() != 2) {
+            cout << "Exactly one argument required. " << ENTER_TO_CONTINUE;
+            getchar();
+            return RES_CONTINUE;
+        }
+        string goto_path;
+
+        if (tokens[1] == "/" || tokens[1] == "~") {
+            // goto APP_ROOT aka HOME_PATH
+            goto_path = HOME_PATH;
+        } else if (tokens[1][0] == '/') {  // if the given path starts with ~ or /
+            // APP ROOT relative path
+            goto_path = HOME_PATH + "/" + tokens[1].substr(1);  // substr(1) == from index 1 till the end
+        } else if (tokens[1][0] == '~' and tokens[1][1] == '/') {
+            goto_path = HOME_PATH + "/" + tokens[1].substr(2);  // substr(2) means skip ~/ in ~/foobar
+        } else {
+            // currrent directory relative path
+            goto_path = tokens[1];
+        }
+
+        // check if the path is valid
+        if (!dir_exists(goto_path)) {
+            cout << "Invalid path:" << goto_path << ". " << ENTER_TO_CONTINUE;
+            getchar();
+            return RES_CONTINUE;
+        }
+
+        extra_param = goto_path;
+        return RES_GOTO_COMMAND;
+    }
+
+    // :search <filename>
+    if (tokens[0] == "search") {
+        if (tokens.size() != 2) {
+            cout << "Exactly one argument required. " << ENTER_TO_CONTINUE;
+            getchar();
+            return RES_CONTINUE;
+        }
+        int res = search_mode(tokens[1], extra_param);
+        if (res == RES_GOTO_COMMAND) {
+            // search mode sets extra_param to
+            // absolute directory path of search result
+            // treat it just like :goto command
+            return RES_GOTO_COMMAND;
+        } else if (res == RES_NORMAL_MODE) {
+            return RES_NORMAL_MODE;
+        }
+        // else the result code is RES_CONTINUE
+        draw_command_line();
+        draw_info_line("COMMAND MODE");
+        return RES_CONTINUE;
+    }
+
 
     // If none matched then command is invalid
     cout << "Invalid command:" << tokens[0] << " " << ENTER_TO_CONTINUE;
     getchar();
     return RES_CONTINUE;
 
-    // TODO   goto <directory_path>
-    // TODO   search <filename>
     // TODO   snapshot <folder> <dumpfile>
 }
