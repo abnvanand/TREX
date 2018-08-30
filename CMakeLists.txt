@@ -9,4 +9,6 @@ add_executable(TREX main.cpp
         cursor_control.cpp cursor_control.h
         normal_mode.cpp normal_mode.h
         keymap.h
-        command_mode.cpp command_mode.h)
+        command_mode.cpp command_mode.h
+        commands.cpp commands.h
+        search_mode.cpp search_mode.h)
