@@ -12,16 +12,7 @@ int main() {
     // TODO: find a better way
     system("tput smcup");        // switch to secondary screen
 
-    while (true) {
-        int res = normal_mode();
-
-        if (res == RES_COMMAND_MODE) {
-            command_mode();
-        } else if (res == RES_NORMAL_MODE) {
-            normal_mode();
-        } else
-            break;
-    }
+    normal_mode();
 
     system("tput rmcup");         // switch back to primary screen
 
