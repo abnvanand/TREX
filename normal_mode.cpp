@@ -85,6 +85,7 @@ int refresh_normal_mode(string &dir_name,
     }
     move_cursor_xy(1, 1);
 
+    unsigned long current_row_number = 1;
     unsigned long current_index = 0;
     unsigned long last_index = directory_list.size() - 1;
 
@@ -105,6 +106,10 @@ int refresh_normal_mode(string &dir_name,
                 print_details(directory_list[current_index]);
                 underline_off();
                 restore_cursor_pos();
+
+                if (current_row_number > 1)
+                    current_row_number -= 1;
+                write_row_number(current_row_number);
             }
         } else if (ch == ARROW_DOWN) {
             if (current_index < last_index) {
@@ -118,6 +123,11 @@ int refresh_normal_mode(string &dir_name,
                 print_details(directory_list[current_index]);
                 underline_off();
                 restore_cursor_pos();
+
+                if (current_row_number < max_num_rows)
+                    current_row_number += 1;
+
+                write_row_number(current_row_number);
             }
         } else if (ch == ARROW_LEFT) {
             if (back_stack.empty())
