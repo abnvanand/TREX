@@ -34,9 +34,6 @@ int normal_mode() {
     string dir = HOME_PATH;
     vector<string> back_stack, forward_stack;
 
-//    back_stack.emplace_back(HOME_PATH);
-//    current_path.emplace_back(HOME_PATH);
-
     while (true) {
         cause_of_return = refresh_normal_mode(dir, back_stack, forward_stack);
 
