@@ -44,8 +44,6 @@ void underline_on();
 
 void underline_off();
 
-void execute_command(std::string &command);
-
 void scroll_up();
 
 void scroll_down();
