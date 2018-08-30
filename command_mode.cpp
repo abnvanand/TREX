@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int command_mode(string HOME_PATH) {
+int command_mode(string HOME_PATH, string &extra_param) {
     draw_info_line("COMMAND MODE");
     draw_command_line();
 
@@ -42,7 +42,7 @@ int command_mode(string HOME_PATH) {
 
         if (ch == ENTER) {
             if (command.length() > 0) {
-                execute_command(command, HOME_PATH);
+                int res = execute_command(command, HOME_PATH, extra_param);
                 command.clear();   // reset command
                 draw_command_line();
             }
@@ -73,8 +73,23 @@ vector<string> get_tokens(string command) {
 }
 
 
-void execute_command(string &command, const string &HOME_PATH) {
-    const string ENTER_TO_CONTINUE = "Press enter to continue.";
+/**
+ * Executes all command mode commands
+ * Except :goto and :search.
+ * :goto and :search are handled by normal mode.
+ * command mode just passes the required parameters to perform these commands.
+ * eg goto_path and search_query
+ * @param command
+ * @param HOME_PATH
+ * @param extra_param => to be used for goto and search
+ * @return Result code
+ * and set extra_param with goto_path or search_query
+ * Possible result codes are:-
+ * RES_CONTINUE = continue looping
+ * RES_GOTO_COMMAND
+ * RES_SEARCH
+ */
+int execute_command(string &command, const string &HOME_PATH, string &extra_param) {
 
     draw_command_line();
     vector<string> tokens = get_tokens(command);
@@ -82,7 +97,7 @@ void execute_command(string &command, const string &HOME_PATH) {
     if (tokens.empty()) {   // though this should never happen :)
         cout << "Invalid command" << ENTER_TO_CONTINUE;
         getchar();  // Hold screen to show error
-        return;
+        return RES_CONTINUE;
     }
 
 
@@ -92,7 +107,7 @@ void execute_command(string &command, const string &HOME_PATH) {
             // Minimum size should be 3=> `copy` `source` `dest`
             cout << "Minimum 2 arguments required." << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
         vector<string> files;
         auto it = tokens.begin() + 1;
@@ -105,7 +120,7 @@ void execute_command(string &command, const string &HOME_PATH) {
         // TODO : implement directory copying
         // https://stackoverflow.com/a/45546054/5463404
 
-        return;
+        return RES_CONTINUE;
     }
 
     // :move <source_file(s)> <destination_directory>
@@ -114,7 +129,7 @@ void execute_command(string &command, const string &HOME_PATH) {
             // Minimum size should be 3=> `copy` `source` `dest`
             cout << "Minimum 2 arguments required." << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
         vector<string> files;
         auto it = tokens.begin() + 1;
@@ -128,7 +143,7 @@ void execute_command(string &command, const string &HOME_PATH) {
         else
             cout << "Files moved successfully. " << ENTER_TO_CONTINUE;
         getchar();
-        return;
+        return RES_CONTINUE;
     }
 
     // :rename <old_filename> <new_filename>
@@ -136,17 +151,17 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (tokens.size() != 3) {
             cout << "Exactly 2 arguments required. " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
 
         if (rename(tokens[1].c_str(), tokens[2].c_str()) == -1) {
             cout << "Error renaming: " << tokens[1] << " " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         } else {
             cout << "Rename successful. " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
     }
 
@@ -155,7 +170,7 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (tokens.size() != 3) {
             cout << "Exactly 2 arguments required." << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
 
         int fd;
@@ -174,7 +189,7 @@ void execute_command(string &command, const string &HOME_PATH) {
             cout << "Success. " << ENTER_TO_CONTINUE;
         }
         getchar();
-        return;
+        return RES_CONTINUE;
     }
 
 
@@ -183,18 +198,18 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (tokens.size() != 3) {
             cout << "Exactly 2 arguments required." << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
 
         int status = mkdir((tokens[2] + "/" + tokens[1]).c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         if (status == -1) {
             cout << "Error creating directory:" << tokens[2] << "/" << tokens[1];
             getchar();
-            return;
+            return RES_CONTINUE;
         } else {
             cout << "Success. " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
     }
 
@@ -204,18 +219,18 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (tokens.size() != 2) {
             cout << "Too few arguments. " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
         if (remove((HOME_PATH + "/" + tokens[1]).c_str()) == -1) {
             cout << "Error deleting the file: " << tokens[1];
             getchar();
-            return;
+            return RES_CONTINUE;
         }
 
         cout << "Deleted " << tokens[1] << " ." << ENTER_TO_CONTINUE;
         getchar();
 
-        return;
+        return RES_CONTINUE;
     }
 
     // :delete_dir <directory_path>
@@ -224,7 +239,7 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (tokens.size() != 2) {
             cout << "Too few arguments. " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
 
         int res = remove_dir((HOME_PATH + "/" + tokens[1]));
@@ -232,17 +247,18 @@ void execute_command(string &command, const string &HOME_PATH) {
         if (res == -1) {
             cout << "Error deleting dir: " << tokens[1] << " " << ENTER_TO_CONTINUE;
             getchar();
-            return;
+            return RES_CONTINUE;
         }
         cout << "Deleted " << HOME_PATH << "/" << tokens[1] << " " << ENTER_TO_CONTINUE;
         getchar();
-        return;
+        return RES_CONTINUE;
     }
 
 
     // If none matched then command is invalid
     cout << "Invalid command:" << tokens[0] << " " << ENTER_TO_CONTINUE;
     getchar();
+    return RES_CONTINUE;
 
     // TODO   goto <directory_path>
     // TODO   search <filename>
