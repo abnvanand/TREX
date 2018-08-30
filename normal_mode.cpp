@@ -153,7 +153,7 @@ int refresh_normal_mode(string &dir_name,
             return RES_GOTO_DIR;
 
         } else if (ch == HOME) {
-            if (back_stack.empty())
+            if (back_stack.empty() || pwd() == HOME_PATH)
                 continue;
 
             forward_stack.clear();
