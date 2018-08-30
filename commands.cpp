@@ -59,7 +59,7 @@ int remove_dir(string dirname) {
         return -1;
     }
 
-    // Firest we recursively delete directory contents.
+    // First we recursively delete directory contents.
     struct dirent *entry;
     while ((entry = readdir(dir)) != nullptr) {
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
@@ -80,3 +80,40 @@ int remove_dir(string dirname) {
 
     return 0;
 }
+
+int search_dir(const string &dirname, const string &query, vector<string> &results) {
+    DIR *dp;
+
+    struct dirent *entry;
+
+    if ((dp = opendir(dirname.c_str())) == nullptr) {
+        return -1;
+    }
+
+    while ((entry = readdir(dp)) != nullptr) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        string filename = entry->d_name;
+        string relative_path = dirname + "/" + entry->d_name;
+
+        // Complete match
+        if (filename == query) {
+            string current_dir = get_current_dir_name();
+            results.emplace_back(relative_path);
+        }
+
+        // Partial match
+//        if(filename.find(query) != string::npos)
+//            results.push_back(filename);
+
+        if (entry->d_type == DT_DIR) {  // if it is a directory
+            // Recursively go to sub directories
+            search_dir(relative_path, query, results);
+        }
+    }
+
+    closedir(dp);
+    return 0;
+}
+
