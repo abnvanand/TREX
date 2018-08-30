@@ -13,6 +13,9 @@
 
 #define RES_SEARCH_COMMAND 5
 #define RES_GOTO_COMMAND 6
+#define RES_CONTINUE 7
+
+#define DIRTY "dirty"
 
 std::string timestamp_to_localtime(time_t timestamp);
 
