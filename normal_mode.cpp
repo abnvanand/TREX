@@ -37,7 +37,7 @@ int normal_mode() {
     while (true) {
         cause_of_return = refresh_normal_mode(dir, back_stack, forward_stack);
 
-        if (cause_of_return != RES_GOTO_DIR)
+        if (cause_of_return != RES_ENTERED_DIR)
             break;
     }
 
@@ -129,7 +129,7 @@ int refresh_normal_mode(string &dir_name,
             dir_name = back_stack.back();
             forward_stack.push_back(pwd());
             back_stack.pop_back();
-            return RES_GOTO_DIR;
+            return RES_ENTERED_DIR;
 
         } else if (ch == ARROW_RIGHT) {
             if (forward_stack.empty()) {
@@ -139,7 +139,7 @@ int refresh_normal_mode(string &dir_name,
             dir_name = forward_stack.back();
             back_stack.push_back(pwd());
             forward_stack.pop_back();
-            return RES_GOTO_DIR;
+            return RES_ENTERED_DIR;
 
         } else if (ch == BACKSPACE) {
             // Behaves just like '..'
@@ -150,7 +150,7 @@ int refresh_normal_mode(string &dir_name,
             forward_stack.clear();          // can't go forward anymore
 
             dir_name = "..";
-            return RES_GOTO_DIR;
+            return RES_ENTERED_DIR;
 
         } else if (ch == HOME) {
             if (back_stack.empty() || pwd() == HOME_PATH)
@@ -159,7 +159,7 @@ int refresh_normal_mode(string &dir_name,
             forward_stack.clear();
             back_stack.push_back(pwd());
             dir_name = HOME_PATH;
-            return RES_GOTO_DIR;
+            return RES_ENTERED_DIR;
 
         } else if (ch == ENTER) {
             dir_name = directory_list[current_index];
@@ -194,7 +194,7 @@ int refresh_normal_mode(string &dir_name,
                     continue;
                 }
             }
-            return RES_GOTO_DIR;
+            return RES_ENTERED_DIR;
 
         } else if (ch == ETX) {
             // ETX (end of text) (Ctrl+C )
