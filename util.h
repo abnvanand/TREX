@@ -1,9 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <ctime>
 #include <string>
-#include <vector>
+#include <unistd.h>
 
 #define RES_QUIT 0
 #define RES_NORMAL_MODE 1
@@ -13,8 +12,6 @@
 
 std::string timestamp_to_localtime(time_t timestamp);
 
-void join(const std::vector<std::string> &v, char c, std::string &s);
-
-void build_home_path(const std::vector<std::string> &v, std::string &s);
+std::string pwd();
 
 #endif //UTIL_H
