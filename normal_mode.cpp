@@ -202,13 +202,28 @@ int refresh_normal_mode(string &dir_name,
         } else if (ch == QUIT) {
             return RES_QUIT;
         } else if (ch == COLON) {
-
+            // un highlight current line
             save_cursor_pos();
-            int res = command_mode();
+            print_details(directory_list[current_index]);
             restore_cursor_pos();
-            if (res == RES_NORMAL_MODE)
+
+            // GOTO command mode
+            int res = command_mode(HOME_PATH);
+
+            if (res == RES_NORMAL_MODE) {
+                draw_info_line(info_line);
+                // Move cursor where it was before we switched to command mode
+                move_cursor_xy((int) current_row_number, 1);
+
+                // highlight current line
+                save_cursor_pos();
+                underline_on();
+                print_details(directory_list[current_index]);
+                underline_off();
+                restore_cursor_pos();
+
                 continue;
-            else
+            } else
                 return RES_QUIT;
         } else {
             // cout << "\n You entered: " << ch << '\n';
