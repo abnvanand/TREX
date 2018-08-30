@@ -173,24 +173,22 @@ int refresh_normal_mode(string &dir_name,
                 forward_stack.clear();          // can't go forward anymore
 
             } else {
-                // TODO: handle files separate from folders
                 struct stat buf;
                 lstat(dir_name.c_str(), &buf);
                 if (S_ISDIR(buf.st_mode)) {
                     back_stack.push_back(pwd());
                     forward_stack.clear();          // can't go forward anymore
                 } else {
-                    string command = "xdg-open " + dir_name;
-                    // Need try catch to suppress GUI warnings.
+                    // It's a file
+                    pid_t pid = fork();
+
                     // FIXME : warnings still visible on some systems
-                    try {
-                        system(command.c_str());
-                        continue;
+                    if (pid == 0) {
+                        // child process
+                        execl("/usr/bin/xdg-open", "xdg-open", dir_name.c_str(), (char *) nullptr);
+                        exit(1);
                     }
-                    catch (int e) {
-                        // ignore
-                        continue;
-                    }
+                    continue;
                 }
             }
             return RES_GOTO_DIR;
