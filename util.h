@@ -18,4 +18,6 @@ std::string timestamp_to_localtime(time_t timestamp);
 
 std::string pwd();
 
+bool dir_exists(const std::string &path);
+
 #endif //UTIL_H

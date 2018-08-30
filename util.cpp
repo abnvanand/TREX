@@ -1,3 +1,4 @@
+#include <dirent.h>
 #include "util.h"
 
 /**
@@ -18,4 +19,17 @@ std::string timestamp_to_localtime(time_t timestamp) {
 std::string pwd() {
     char *cwd = get_current_dir_name();
     return cwd;
+}
+
+bool dir_exists(const std::string &path) {
+    DIR *dirptr;
+
+    // we need to use c_str() bcoz opendir accepts on char * and converting
+    // our name to char * copies some invalid characters into it.
+    if ((dirptr = opendir(path.c_str())) == nullptr) {
+        return false;
+    }
+
+    closedir(dirptr);
+    return true;
 }
