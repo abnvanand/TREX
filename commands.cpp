@@ -2,6 +2,7 @@
 #include <cstring>
 #include "commands.h"
 
+#define DEFAULT_FILE_PERMS 0644
 using namespace std;
 
 void copy_perms(const char *fromFile, const char *toFile) {
@@ -10,29 +11,62 @@ void copy_perms(const char *fromFile, const char *toFile) {
     chmod(toFile, tmp.st_mode);
 }
 
-void copy_file(const string &from, const string &to) {
+int copy_file(const string &from, const string &to) {
     char buf[BUFSIZ];
-    long size;
+    ssize_t size;
 
     int source = open(from.c_str(), O_RDONLY, 0);
-    int dest = open(to.c_str(), O_WRONLY | O_CREAT, 0644);
+    if (source == -1) {
+        return -1;
+    }
+
+    int dest = open(to.c_str(), O_WRONLY | O_CREAT, DEFAULT_FILE_PERMS);
+    if (dest == -1) {
+        return -2;
+    }
 
     while ((size = read(source, buf, BUFSIZ)) > 0) {
-        write(dest, buf, size);
+        if (write(dest, buf, size) == -1)
+            return -3;
         copy_perms(from.c_str(), to.c_str());
     }
 
     close(source);
     close(dest);
+    return 0;
 }
 
+/**
+ *
+ * @param fullfilepath
+ * @return the last part of the path which is acc=tually the filename
+ */
+string getfilename_from_path(const string &fullfilepath) {
+    string token;
+
+    for (char c: fullfilepath) {
+        // build the token until we encounter a space
+        if (c == '/') {
+            token.clear();
+        } else {
+            token += c;
+        }
+    }
+
+    return token;
+}
 
 // Assume that the destination directory exists and you have write
 // permissions.
-void copy_files_to_dir(const vector<string> &files, const string &dest) {
-    for (const string &i :files) {
-        copy_file(i, dest + "/" + i);
+int copy_files_to_dir(const vector<string> &source_files, const string &dest) {
+    for (const string &source_path :source_files) {
+        string dest_file_path = dest + "/" + getfilename_from_path(source_path);
+        if (copy_file(source_path, dest_file_path) == -1) {
+            return -1;
+        }
     }
+
+    return 0;
 }
 
 int move_files_to_dir(const vector<string> &files, const string &dest) {
