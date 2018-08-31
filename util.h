@@ -23,4 +23,6 @@ std::string pwd();
 
 bool dir_exists(const std::string &path);
 
+std::string get_proper_path(const std::string &path, const std::string &HOME_PATH);
+
 #endif //UTIL_H

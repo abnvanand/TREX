@@ -33,3 +33,18 @@ bool dir_exists(const std::string &path) {
     closedir(dirptr);
     return true;
 }
+
+std::string get_proper_path(const std::string &path, const std::string &HOME_PATH) {
+    if (path == "/" || path == "~")
+        // goto APP_ROOT aka HOME_PATH
+        return HOME_PATH;
+    if (path[0] == '/')
+        // APP ROOT relative path
+        return HOME_PATH + "/" + path.substr(1);  // substr(1) == from index 1 till the end
+    if (path[0] == '~' and path[1] == '/')
+        // APP ROOT relative path in different notation
+        return HOME_PATH + "/" + path.substr(2);  // substr(2) means skip ~/ in ~/foobar
+
+    // currrent directory relative path
+    return path;
+}
