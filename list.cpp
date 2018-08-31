@@ -85,21 +85,21 @@ string get_permission_string(mode_t &st_mode) {
 
 /**
  * Behaves like the ls command of terminal.
- * @param dir
+ * @param dirname
  */
-vector<string> ls(string dir) {
+vector<string> ls(string dirname) {
     DIR *dirptr;
     vector<string> list;
 
     struct dirent *item;
     // we need to use c_str() bcoz opendir accepts on char * and converting
-    // our name to char * copies some invalid characters into it.
-    if ((dirptr = opendir(dir.c_str())) == nullptr) {
-        cout << "Error opening directory: " << dir << "\n";
+    // our dirname to char * copies some invalid characters into it.
+    if ((dirptr = opendir(dirname.c_str())) == nullptr) {
+        cout << "Error opening directory: " << dirname << "\n";
         return list;
     }
 
-    chdir(dir.c_str());
+    chdir(dirname.c_str());
     while ((item = readdir(dirptr)) != nullptr) {
         string name = item->d_name;
         list.emplace_back(name);

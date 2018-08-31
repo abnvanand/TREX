@@ -19,6 +19,6 @@ std::string get_permission_string(mode_t &st_mode);
 
 void print_details(std::string i);
 
-std::vector<std::string> ls(std::string dir);
+std::vector<std::string> ls(std::string dirname);
 
 #endif //LIST_H
