@@ -132,9 +132,6 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             cout << "Files copied successfully. " << ENTER_TO_CONTINUE;
         getchar();
         return RES_CONTINUE;
-
-        // TODO : implement directory copying
-        // https://stackoverflow.com/a/45546054/5463404
     }
 
     // :move <source_file(s)> <destination_directory>

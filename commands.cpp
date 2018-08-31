@@ -5,6 +5,12 @@
 #define DEFAULT_FILE_PERMS 0644
 using namespace std;
 
+bool is_dir(string path) {
+    struct stat buf;
+    stat(path.c_str(), &buf);
+    return S_ISDIR(buf.st_mode);
+}
+
 int create_file(const string &filepath) {
     int fd;
 
@@ -68,13 +74,64 @@ string getfilename_from_path(const string &fullfilepath) {
     return token;
 }
 
+__mode_t get_mode(const string &file) {
+    struct stat tmp;
+    lstat(file.c_str(), &tmp);
+    return tmp.st_mode;
+}
+
+int copy_dir(const string &sourcedir, const string &destdir) {
+    string source_item_path, dest_item_path;
+
+    DIR *dp = opendir(sourcedir.c_str());
+    if (dp == nullptr)
+        return -1;
+
+    struct dirent *entry;
+
+    while ((entry = readdir(dp)) != nullptr) {
+
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        source_item_path = sourcedir + "/" + entry->d_name;
+        dest_item_path = destdir + "/" + entry->d_name;
+
+        if (entry->d_type == DT_DIR) {
+            // Create folder in destination path
+            mkdir(dest_item_path.c_str(), get_mode(source_item_path));
+
+            // Go inside directory
+            copy_dir(source_item_path, dest_item_path);
+        } else {
+            // copy file to destination path
+            copy_file(source_item_path, dest_item_path);
+        }
+    }
+    closedir(dp);
+
+    return 0;
+}
+
+
 // Assume that the destination directory exists and you have write
 // permissions.
 int copy_files_to_dir(const vector<string> &source_files, const string &dest) {
     for (const string &source_path :source_files) {
-        string dest_file_path = dest + "/" + getfilename_from_path(source_path);
-        if (copy_file(source_path, dest_file_path) == -1) {
-            return -1;
+        if (is_dir(source_path)) {
+            // create source directory inside destination directory
+            string path = dest + "/" + getfilename_from_path(source_path);
+            mkdir(path.c_str(), get_mode(source_path));
+
+            // now copy content of source directory
+            copy_dir(source_path, path);
+
+        } else {
+            // It's a file. Copy it as usual
+            string dest_file_path = dest + "/" + getfilename_from_path(source_path);
+            if (copy_file(source_path, dest_file_path) == -1) {
+                return -1;
+            }
         }
     }
 
