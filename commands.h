@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 
 
+int create_file(const std::string &filepath);
+
 int copy_files_to_dir(const std::vector<std::string> &source_files, const std::string &dest);
 
 int move_files_to_dir(const std::vector<std::string> &files, const std::string &dest);

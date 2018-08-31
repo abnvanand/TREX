@@ -5,6 +5,18 @@
 #define DEFAULT_FILE_PERMS 0644
 using namespace std;
 
+int create_file(const string &filepath) {
+    int fd;
+
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+    if ((fd = creat(filepath.c_str(), mode)) < 0) {
+        return -1;
+    }
+    close(fd);
+
+    return 0;
+}
+
 void copy_perms(const char *fromFile, const char *toFile) {
     struct stat tmp;
     lstat(fromFile, &tmp);
