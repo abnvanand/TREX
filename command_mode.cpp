@@ -122,15 +122,19 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         vector<string> files;
         auto it = tokens.begin() + 1;
         while (it != tokens.end() - 1) {
-            files.push_back(*it);
+            files.push_back(get_proper_path(*it, HOME_PATH));
             it++;
         }
-        copy_files_to_dir(files, tokens.back());
+        int res = copy_files_to_dir(files, get_proper_path(tokens.back(), HOME_PATH));
+        if (res <= -1)
+            cout << "Error copying files to: " << get_proper_path(tokens.back(), HOME_PATH) << " " << ENTER_TO_CONTINUE;
+        else
+            cout << "Files copied successfully. " << ENTER_TO_CONTINUE;
+        getchar();
+        return RES_CONTINUE;
 
         // TODO : implement directory copying
         // https://stackoverflow.com/a/45546054/5463404
-
-        return RES_CONTINUE;
     }
 
     // :move <source_file(s)> <destination_directory>
