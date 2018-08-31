@@ -1,6 +1,7 @@
 #include "command_mode.h"
 #include "commands.h"
 #include "search_mode.h"
+#include "snapshot.h"
 
 using namespace std;
 
@@ -320,11 +321,27 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         return RES_CONTINUE;
     }
 
+    // :snapshot <folder> <dumpfile>
+    if (tokens[0] == "snapshot") {
+        if (tokens.size() != 3) {
+            cout << "Exactly two arguments required. " << ENTER_TO_CONTINUE;
+            getchar();
+            return RES_CONTINUE;
+        }
+
+        int res = create_snapshot(tokens[2], tokens[1]);
+        if (res == -1) {
+            cout << "snapshot creation failed. " << ENTER_TO_CONTINUE;
+        } else {
+            cout << "snapshot created. " << ENTER_TO_CONTINUE;
+        }
+
+        getchar();
+        return RES_CONTINUE;
+    }
 
     // If none matched then command is invalid
     cout << "Invalid command:" << tokens[0] << " " << ENTER_TO_CONTINUE;
     getchar();
     return RES_CONTINUE;
-
-    // TODO   snapshot <folder> <dumpfile>
 }
