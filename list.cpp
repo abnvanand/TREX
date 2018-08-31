@@ -8,11 +8,35 @@ int cmp(const string &a, const string &b) {
 }
 
 
-// TODO: Find how to handle all possible file types. read page 140 and 141
-// currently it handles only 'd' and '-' no 'l' for symlink etc..
+// To handle all possible file types. read page 140 and 141
+// https://linux.die.net/man/2/stat
 string get_permission_string(mode_t &st_mode) {
     string res;
-    res += ((S_ISDIR(st_mode)) ? "d" : "-");
+    if (S_ISREG(st_mode)) {
+        res += "-";
+    } else if (S_ISDIR(st_mode)) {
+        // directory
+        res += "d";
+    } else if (S_ISCHR(st_mode)) {
+        // character device
+        res += "c";
+    } else if (S_ISBLK(st_mode)) {
+        // block device
+        res += "b";
+    } else if (S_ISFIFO(st_mode)) {
+        // FIFO(named pipe)
+        res += "p";
+    }
+
+    // Don't use else if here bcoz symbolic link matches Regular file as well.
+    if (S_ISLNK(st_mode)) {
+        // symbolic link (Not in POSIX .1 - 1996.)
+        res += "l";
+    } else if (S_ISSOCK(st_mode)) {
+        // socket (Not in POSIX .1 - 1996.)
+        res += "s";
+    }
+
     res += ((st_mode & S_IRUSR) ? "r" : "-");
     res += ((st_mode & S_IWUSR) ? "w" : "-");
     res += ((st_mode & S_IXUSR) ? "x" : "-");
