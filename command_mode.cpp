@@ -148,16 +148,17 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         vector<string> files;
         auto it = tokens.begin() + 1;
         while (it != tokens.end() - 1) {
-            files.push_back(*it);
+            files.push_back(get_proper_path(*it, HOME_PATH));
             it++;
         }
-        int res = move_files_to_dir(files, tokens.back());
+        int res = move_files_to_dir(files, get_proper_path(tokens.back(), HOME_PATH));
         if (res == -1)
             cout << "Error moving files to: " << tokens.back() << ". " << ENTER_TO_CONTINUE;
         else
             cout << "Files moved successfully. " << ENTER_TO_CONTINUE;
         getchar();
         return RES_CONTINUE;
+        // TODO : implement directory moving
     }
 
     // :rename <old_filename> <new_filename>
@@ -187,19 +188,16 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             return RES_CONTINUE;
         }
 
-        int fd;
-        const char *filename;
+        string filepath;
         if (tokens[2] == ".") { // Create in current dir
-            filename = tokens[1].c_str();
+            filepath = tokens[1];
         } else {
-            filename = (tokens[2] + "/" + tokens[1]).c_str();
+            filepath = get_proper_path(tokens[2], HOME_PATH) + "/" + tokens[1];
         }
 
-        mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-        if ((fd = creat(filename, mode)) < 0) {
+        if (create_file(filepath) == -1) {
             cout << "Error creating file. " << ENTER_TO_CONTINUE;
         } else {
-            close(fd);
             cout << "Success. " << ENTER_TO_CONTINUE;
         }
         getchar();
@@ -215,7 +213,8 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             return RES_CONTINUE;
         }
 
-        int status = mkdir((tokens[2] + "/" + tokens[1]).c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        int status = mkdir((get_proper_path(tokens[2], HOME_PATH) + "/" + tokens[1]).c_str(),
+                           S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         if (status == -1) {
             cout << "Error creating directory:" << tokens[2] << "/" << tokens[1];
             getchar();
@@ -279,18 +278,7 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         }
         string goto_path;
 
-        if (tokens[1] == "/" || tokens[1] == "~") {
-            // goto APP_ROOT aka HOME_PATH
-            goto_path = HOME_PATH;
-        } else if (tokens[1][0] == '/') {  // if the given path starts with ~ or /
-            // APP ROOT relative path
-            goto_path = HOME_PATH + "/" + tokens[1].substr(1);  // substr(1) == from index 1 till the end
-        } else if (tokens[1][0] == '~' and tokens[1][1] == '/') {
-            goto_path = HOME_PATH + "/" + tokens[1].substr(2);  // substr(2) means skip ~/ in ~/foobar
-        } else {
-            // currrent directory relative path
-            goto_path = tokens[1];
-        }
+        goto_path = get_proper_path(tokens[1], HOME_PATH);
 
         // check if the path is valid
         if (!dir_exists(goto_path)) {
