@@ -117,13 +117,13 @@ void print_details(string name) {
 
     lstat(name.c_str(), &statbuf);
 
-    cout << setw(8) << human_readable_size(statbuf.st_size);
+    cout << setw(10) << get_permission_string(statbuf.st_mode);
 
     // TODO: test long user names
     cout << setw(10) << getpwuid(statbuf.st_uid)->pw_name;
     cout << setw(10) << getgrgid(statbuf.st_gid)->gr_name;
 
-    cout << setw(12) << get_permission_string(statbuf.st_mode);
+    cout << setw(8) << human_readable_size(statbuf.st_size);
 
     cout << setw(18) << timestamp_to_localtime(statbuf.st_mtime);
 
