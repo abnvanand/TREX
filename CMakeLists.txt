@@ -11,4 +11,5 @@ add_executable(TREX main.cpp
         keymap.h
         command_mode.cpp command_mode.h
         commands.cpp commands.h
-        search_mode.cpp search_mode.h)
+        search_mode.cpp search_mode.h
+        snapshot.cpp snapshot.h)
