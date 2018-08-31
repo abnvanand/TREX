@@ -9,7 +9,8 @@ using namespace std;
 
 
 int main() {
-    // TODO: find a better way
+    // Switch screen so that we do not pollute the original terminal screen. (vi, htop etc like effect)
+    // This can be safely removed. // If removing this uncomment code in cursor_control.clear_screen();
     system("tput smcup");        // switch to secondary screen
 
     normal_mode();

@@ -10,6 +10,8 @@ using namespace std;
 // should move the cursor to the top of the screen right now it isn't
 void clear_screen() {
     cout << "\033[2J";
+//    cout << "\033[3J";           // Not needed if switching screen using tput smcup
+//    cout << "\033[H\033[J";     // Not compatible with all terminals
 }
 
 
