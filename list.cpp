@@ -2,6 +2,39 @@
 
 using namespace std;
 
+//__int128_t YOTA = 1208925819614629174706176;
+//__int128_t ZETTA = 1180591620717411303424;
+//__off_t EXA = 1152921504606846976;
+__off_t PETA = 1125899906842624;
+__off_t TERRA = 1099511627776;
+__off_t GIGA = 1073741824;
+__off_t MEGA = 1048576;
+__off_t KILO = 1024;
+__off_t BYTE = 1;
+
+/**
+ *
+ * @param size in Bytes
+ * @return size in human readable format(KB, GB, TB)
+ */
+string human_readable_size(__off_t size) {
+    string res;
+    if (size > PETA) {
+        res = to_string(size / PETA) + "PB";
+    } else if (size > TERRA) {
+        res = to_string(size / TERRA) + "TB";
+    } else if (size > GIGA) {
+        res = to_string(size / GIGA) + "GB";
+    } else if (size > MEGA) {
+        res = to_string(size / MEGA) + "MB";
+    } else if (size > KILO) {
+        res = to_string(size / KILO) + "KB";
+    } else {
+        res = to_string(size) + "B";
+    }
+    return res;
+}
+
 // FIXME: sort should imitate ls in the order of results
 int cmp(const string &a, const string &b) {
     return a < b;
@@ -84,8 +117,7 @@ void print_details(string name) {
 
     lstat(name.c_str(), &statbuf);
 
-    // TODO: make human readable like ls -lh
-    cout << setw(8) << statbuf.st_size;
+    cout << setw(8) << human_readable_size(statbuf.st_size);
 
     // TODO: test long user names
     cout << setw(10) << getpwuid(statbuf.st_uid)->pw_name;
