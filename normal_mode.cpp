@@ -67,15 +67,15 @@ int refresh_normal_mode(string &dir_name,
     scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows] FIXME RCA?
 
     unsigned int i = 0;
-    for (; i < directory_list.size() and i < max_num_rows - 1; i++) { // * Beware DONOT change i<max_num_rows FIXME RCA?
+    for (; i < directory_list.size() and i < max_num_rows; i++) { // * Beware DONOT change i<max_num_rows
         if (i == 0) {
             underline_on();
             print_details(directory_list[i]);
             underline_off();
         } else {
+            cout << "\n";
             print_details(directory_list[i]);
         }
-        cout << "\n";
     }
     move_cursor_xy(1, 1);
 
