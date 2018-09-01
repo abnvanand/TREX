@@ -17,14 +17,11 @@ void refresh_normal_mode_ui() {
 
     move_cursor_xy(1, 1);
 
-//    save_cursor_pos();  // save current cursor position it will to first item in list
-
-
     unsigned int rows, cols;
     get_window_size(rows, cols);
     unsigned int max_num_rows = rows - 3;   // subtract 1 for command line 1 for status line and 1 for a blank line
 
-//    scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows] FIXME RCA?
+    scroll_screen(1, max_num_rows);         // * Beware DO NOT change this range [1,max_num_rows]
 
     unsigned int i = 0;
     for (; i < directory_list.size() and i < max_num_rows; i++) { // * Beware DONOT change i<max_num_rows
@@ -37,8 +34,6 @@ void refresh_normal_mode_ui() {
             print_details(directory_list[i]);
         }
     }
-//    move_cursor_xy(1, 1);
-
 }
 
 void fire_refresh(string &extra_param) {
