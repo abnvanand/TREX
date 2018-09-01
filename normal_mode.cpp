@@ -186,7 +186,7 @@ int refresh_normal_mode(string &dir_name,
                     // It's a file
                     pid_t pid = fork();
 
-                    // FIXME : warnings still visible on some systems
+                    // FIXME : Gives warning on some application launch in some systems.
                     if (pid == 0) {
                         // child process
                         execl("/usr/bin/xdg-open", "xdg-open", dir_name.c_str(), (char *) nullptr);

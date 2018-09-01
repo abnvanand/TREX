@@ -24,11 +24,11 @@ int search_mode(const string &query, string &extra_param) {
     get_window_size(rows, cols);
     unsigned int max_num_rows = rows - 3;   // subtract 1 for command line 1 for status line and 1 for a blank line
 
-    scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows] FIXME RCA?
+    scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows]
 
 
     unsigned int i = 0;
-    for (; i < search_results.size() and i < max_num_rows - 1; i++) { // * Beware DONOT change i<max_num_rows FIXME RCA?
+    for (; i < search_results.size() and i < max_num_rows - 1; i++) { // * Beware DONOT change i<max_num_rows
         if (i == 0) {
             underline_on();
             cout << search_results[i] << endl;

@@ -35,7 +35,6 @@ string human_readable_size(__off_t size) {
     return res;
 }
 
-// FIXME: sort should imitate ls in the order of results
 int cmp(const string &a, const string &b) {
     return a < b;
 }
@@ -119,7 +118,6 @@ void print_details(string name) {
 
     cout << setw(10) << get_permission_string(statbuf.st_mode);
 
-    // TODO: test long user names
     cout << setw(10) << getpwuid(statbuf.st_uid)->pw_name;
     cout << setw(10) << getgrgid(statbuf.st_gid)->gr_name;
 
