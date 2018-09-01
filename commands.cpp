@@ -160,10 +160,12 @@ int move_files_to_dir(const vector<string> &files, const string &dest) {
     else
         dest_dir = dest + "/";
     for (const string &i :files) {
-        int res = rename(i.c_str(), (dest_dir + i).c_str());
+        int res = rename(i.c_str(), (dest_dir + getfilename_from_path(i)).c_str());
 
-        if (res == -1)
+        if (res == -1) {
+//            cout << "Errno:" << strerror(errno);
             return -1;
+        }
     }
 
     return 0;
