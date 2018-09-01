@@ -64,25 +64,6 @@ int command_mode(string HOME_PATH, string &extra_param) {
     }
 }
 
-vector<string> get_tokens(string command) {
-    vector<string> tokens;
-    string token;
-
-    for (char c: command) {
-        // build the token until we encounter a space
-        if (c == ' ') {
-            tokens.push_back(token);
-            token.clear();
-        } else {
-            token += c;
-        }
-    }
-    tokens.push_back(token);    // push last token
-
-    return tokens;
-}
-
-
 /**
  * Executes all command mode commands
  * Except :goto and :search.
