@@ -224,6 +224,15 @@ int refresh_normal_mode(string &dir_name,
                 underline_off();
                 restore_cursor_pos();
 
+                try {
+                    // If the current directory was deleted in command mode move to home.
+                    pwd();
+                }
+                catch (exception &e) {
+                    dir_name = HOME_PATH;
+                    return RES_ENTERED_DIR;
+                }
+
                 if (extra_params == DIRTY) {
                     dir_name = pwd();
                     return RES_ENTERED_DIR;
