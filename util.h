@@ -3,6 +3,9 @@
 
 #include <string>
 #include <unistd.h>
+#include <dirent.h>
+#include <vector>
+
 
 #define RES_QUIT 0
 #define RES_NORMAL_MODE 1
@@ -24,5 +27,7 @@ std::string pwd();
 bool dir_exists(const std::string &path);
 
 std::string get_proper_path(const std::string &path, const std::string &HOME_PATH);
+
+std::vector<std::string> escaped_tokenizer(std::string command);
 
 #endif //UTIL_H

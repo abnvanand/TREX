@@ -1,4 +1,3 @@
-#include <dirent.h>
 #include "util.h"
 
 /**
@@ -47,4 +46,29 @@ std::string get_proper_path(const std::string &path, const std::string &HOME_PAT
 
     // currrent directory relative path
     return path;
+}
+
+std::vector<std::string> escaped_tokenizer(std::string command) {
+    std::vector<std::string> tokens;
+    std::string token;
+    bool escaped = false;
+    char escape_char = '\'';
+
+    for (char c: command) {
+        // build the token until we encounter a space
+        if (c == ' ' and !escaped) {
+            tokens.push_back(token);
+            token.clear();
+        } else if ((c == '\'' || c == '\"') and !escaped) {
+            escape_char = c;
+            escaped = !escaped;
+        } else if (c == escape_char) {
+            escaped = !escaped;
+        } else {
+            token += c;
+        }
+    }
+    tokens.push_back(token);    // push last token
+
+    return tokens;
 }
