@@ -29,6 +29,18 @@ void copy_perms(const char *fromFile, const char *toFile) {
     chmod(toFile, tmp.st_mode);
 }
 
+void copy_ownerships(const char *from, const char *to) {
+    struct stat tmp;
+    cout << "From: " << from;
+    getchar();
+    cout << "TO: " << to;
+    getchar();
+    lstat(from, &tmp);
+    if (-1 == chown(to, tmp.st_uid, tmp.st_gid)) {
+        return;
+    }
+}
+
 int copy_file(const string &from, const string &to) {
     char buf[BUFSIZ];
     ssize_t size;
@@ -46,8 +58,9 @@ int copy_file(const string &from, const string &to) {
     while ((size = read(source, buf, BUFSIZ)) > 0) {
         if (write(dest, buf, size) == -1)
             return -3;
-        copy_perms(from.c_str(), to.c_str());
     }
+    copy_perms(from.c_str(), to.c_str());
+    copy_ownerships(from.c_str(), to.c_str());
 
     close(source);
     close(dest);
@@ -100,6 +113,7 @@ int copy_dir(const string &sourcedir, const string &destdir) {
         if (entry->d_type == DT_DIR) {
             // Create folder in destination path
             mkdir(dest_item_path.c_str(), get_mode(source_item_path));
+            copy_ownerships(source_item_path.c_str(), dest_item_path.c_str());
 
             // Go inside directory
             copy_dir(source_item_path, dest_item_path);
@@ -122,6 +136,7 @@ int copy_files_to_dir(const vector<string> &source_files, const string &dest) {
             // create source directory inside destination directory
             string path = dest + "/" + getfilename_from_path(source_path);
             mkdir(path.c_str(), get_mode(source_path));
+            copy_ownerships(source_path.c_str(), path.c_str());
 
             // now copy content of source directory
             copy_dir(source_path, path);
