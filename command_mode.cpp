@@ -2,8 +2,51 @@
 #include "commands.h"
 #include "search_mode.h"
 #include "snapshot.h"
+#include "list.h"
 
 using namespace std;
+
+
+void refresh_normal_mode_ui() {
+    vector<string> directory_list = ls(".");
+
+    clear_screen();
+
+    draw_info_line("COMMAND MODE");
+    draw_command_line();
+
+    move_cursor_xy(1, 1);
+
+//    save_cursor_pos();  // save current cursor position it will to first item in list
+
+
+    unsigned int rows, cols;
+    get_window_size(rows, cols);
+    unsigned int max_num_rows = rows - 3;   // subtract 1 for command line 1 for status line and 1 for a blank line
+
+//    scroll_screen(1, max_num_rows);         // * Beware DONOT change this magic range [1,max_num_rows] FIXME RCA?
+
+    unsigned int i = 0;
+    for (; i < directory_list.size() and i < max_num_rows - 1; i++) { // * Beware DONOT change i<max_num_rows FIXME RCA?
+        if (i == 0) {
+            underline_on();
+            print_details(directory_list[i]);
+            underline_off();
+        } else {
+            print_details(directory_list[i]);
+        }
+        cout << "\n";
+    }
+//    move_cursor_xy(1, 1);
+
+}
+
+void fire_refresh(string &extra_param) {
+    save_cursor_pos();
+    refresh_normal_mode_ui();
+    restore_cursor_pos();
+    extra_param = DIRTY;
+}
 
 int command_mode(string HOME_PATH, string &extra_param) {
     draw_info_line("COMMAND MODE");
@@ -109,8 +152,10 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         int res = copy_files_to_dir(files, get_proper_path(tokens.back(), HOME_PATH));
         if (res <= -1)
             cout << "Error copying files to: " << get_proper_path(tokens.back(), HOME_PATH) << " " << ENTER_TO_CONTINUE;
-        else
+        else {
+            fire_refresh(extra_param);
             cout << "Files copied successfully. " << ENTER_TO_CONTINUE;
+        }
         getchar();
         return RES_CONTINUE;
     }
@@ -132,8 +177,10 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         int res = move_files_to_dir(files, get_proper_path(tokens.back(), HOME_PATH));
         if (res == -1)
             cout << "Error moving files to: " << tokens.back() << ". " << ENTER_TO_CONTINUE;
-        else
+        else {
+            fire_refresh(extra_param);
             cout << "Files moved successfully. " << ENTER_TO_CONTINUE;
+        }
         getchar();
         return RES_CONTINUE;
         // TODO : implement directory moving
@@ -152,6 +199,7 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             getchar();
             return RES_CONTINUE;
         } else {
+            fire_refresh(extra_param);
             cout << "Rename successful. " << ENTER_TO_CONTINUE;
             getchar();
             return RES_CONTINUE;
@@ -176,6 +224,7 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         if (create_file(filepath) == -1) {
             cout << "Error creating file. " << ENTER_TO_CONTINUE;
         } else {
+            fire_refresh(extra_param);
             cout << "Success. " << ENTER_TO_CONTINUE;
         }
         getchar();
@@ -198,6 +247,7 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             getchar();
             return RES_CONTINUE;
         } else {
+            fire_refresh(extra_param);
             cout << "Success. " << ENTER_TO_CONTINUE;
             getchar();
             return RES_CONTINUE;
@@ -218,7 +268,9 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             return RES_CONTINUE;
         }
 
+        fire_refresh(extra_param);
         cout << "Deleted " << tokens[1] << " ." << ENTER_TO_CONTINUE;
+
         getchar();
 
         return RES_CONTINUE;
@@ -240,6 +292,7 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
             getchar();
             return RES_CONTINUE;
         }
+        fire_refresh(extra_param);
         cout << "Deleted " << HOME_PATH << "/" << tokens[1] << " " << ENTER_TO_CONTINUE;
         getchar();
         return RES_CONTINUE;
