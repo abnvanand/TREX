@@ -183,7 +183,6 @@ int execute_command(string &command, const string &HOME_PATH, string &extra_para
         }
         getchar();
         return RES_CONTINUE;
-        // TODO : implement directory moving
     }
 
     // :rename <old_filename> <new_filename>
