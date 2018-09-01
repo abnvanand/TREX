@@ -5,8 +5,8 @@
 #include <iostream>
 #include <iomanip>
 #include <dirent.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include <sys/stat.h>
 #include <pwd.h>
 #include <grp.h>

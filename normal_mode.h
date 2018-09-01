@@ -4,7 +4,7 @@
 #include <iostream>
 #include <termios.h>
 #include <utility>
-#include <stdlib.h>
+#include <cstdlib>
 #include <stack>
 #include "cursor_control.h"
 #include "keymap.h"

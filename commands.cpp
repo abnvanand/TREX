@@ -5,7 +5,7 @@
 #define DEFAULT_FILE_PERMS 0644
 using namespace std;
 
-bool is_dir(string path) {
+bool is_dir(const string &path) {
     struct stat buf;
     stat(path.c_str(), &buf);
     return S_ISDIR(buf.st_mode);

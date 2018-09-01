@@ -12,7 +12,7 @@
 
 #define ENTER 10
 #define DELETE 127
-// I dno't know why but on my system backspace gives 127 not 8
+// I don't know why but on my system backspace gives 127 not 8
 #define BACKSPACE 127
 
 #define ESCAPE 27
