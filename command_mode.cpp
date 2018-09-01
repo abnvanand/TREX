@@ -102,7 +102,7 @@ vector<string> get_tokens(string command) {
 int execute_command(string &command, const string &HOME_PATH, string &extra_param) {
 
     draw_command_line();
-    vector<string> tokens = get_tokens(command);
+    vector<string> tokens = escaped_tokenizer(command);
 
     if (tokens.empty()) {   // though this should never happen :)
         cout << "Invalid command" << ENTER_TO_CONTINUE;
