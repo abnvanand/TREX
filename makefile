@@ -1,3 +1,9 @@
+# all: library.cpp main.cpp
+#
+# $@ evaluates to all
+# $< evaluates to library.cpp
+# $^ evaluates to library.cpp main.cpp
+
 CC = g++
 CFLAGS = -Wall -std=c++1y
 DEPS = util.h list.h cursor_control.h normal_mode.h keymap.h command_mode.h commands.h search_mode.h snapshot.h
