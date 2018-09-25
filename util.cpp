@@ -63,8 +63,10 @@ std::vector<std::string> escaped_tokenizer(std::string command) {
     for (char c: command) {
         // build the token until we encounter a space
         if (c == ' ' and !escaped) {
-            tokens.push_back(token);
-            token.clear();
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
         } else if ((c == '\'' || c == '\"') and !escaped) {
             escape_char = c;
             escaped = !escaped;
